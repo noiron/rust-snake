@@ -1,8 +1,10 @@
 use std::collections::LinkedList;
 
-use piston_window::{Context, G2d};
+use piston_window::{types::Color, Context, G2d};
 
 use crate::drawing::draw_block;
+
+const SNAKE_COLOR: Color = [0.0, 1.0, 0.0, 1.0];
 
 struct Block {
     x: u32,
@@ -31,7 +33,7 @@ impl Snake {
 
     pub fn draw(&mut self, context: Context, graphics: &mut G2d) {
         for block in self.body.iter() {
-            draw_block(block.x, block.y, context.transform, graphics);
+            draw_block(block.x, block.y, SNAKE_COLOR, context.transform, graphics);
         }
     }
 }
