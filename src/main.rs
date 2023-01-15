@@ -16,6 +16,10 @@ fn main() {
     let mut game = Game::new();
 
     while let Some(event) = window.next() {
+        if let Some(args) = event.update_args() {
+            game.update(args.dt);
+        }
+
         window.draw_2d(&event, |context, graphics, _device| {
             clear([1.0; 4], graphics);
             rectangle(

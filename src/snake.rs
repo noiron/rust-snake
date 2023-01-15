@@ -36,4 +36,11 @@ impl Snake {
             draw_block(block.x, block.y, SNAKE_COLOR, context.transform, graphics);
         }
     }
+
+    pub fn update(&mut self) {
+        let head = self.body.front().unwrap();
+        let new_block = Block::new(head.x + 1, head.y);
+        self.body.push_front(new_block);
+        self.body.pop_back();
+    }
 }
