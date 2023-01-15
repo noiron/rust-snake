@@ -1,5 +1,10 @@
 extern crate piston_window;
 
+mod drawing;
+mod game;
+mod snake;
+
+use game::Game;
 use piston_window::*;
 
 fn main() {
@@ -7,6 +12,8 @@ fn main() {
         .exit_on_esc(true)
         .build()
         .unwrap();
+
+    let mut game = Game::new();
 
     while let Some(event) = window.next() {
         window.draw_2d(&event, |context, graphics, _device| {
@@ -17,6 +24,7 @@ fn main() {
                 context.transform,
                 graphics,
             );
+            game.draw(context, graphics);
         });
     }
 }
