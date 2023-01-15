@@ -51,7 +51,15 @@ impl Game {
 
         if self.waiting_time > 0.2 {
             self.snake.update(self.direction);
+            self.eat_food();
             self.waiting_time = 0.0;
+        }
+    }
+
+    pub fn eat_food(&mut self) {
+        let (head_x, head_y) = self.snake.head();
+        if head_x == self.food_x && head_y == self.food_y {
+            self.snake.eat();
         }
     }
 
