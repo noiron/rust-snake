@@ -8,7 +8,7 @@ use game::Game;
 use piston_window::*;
 
 fn main() {
-    let mut window: PistonWindow = WindowSettings::new("Hello Piston!", [640, 480])
+    let mut window: PistonWindow = WindowSettings::new("Rust Snake", [500, 500])
         .exit_on_esc(true)
         .build()
         .unwrap();
@@ -16,18 +16,16 @@ fn main() {
     let mut game = Game::new();
 
     while let Some(event) = window.next() {
+        if let Some(Button::Keyboard(key)) = event.press_args() {
+            game.key_pressed(key);
+        }
+
         if let Some(args) = event.update_args() {
             game.update(args.dt);
         }
 
         window.draw_2d(&event, |context, graphics, _device| {
             clear([1.0; 4], graphics);
-            rectangle(
-                [1.0, 0.0, 0.0, 1.0], // red
-                [0.0, 0.0, 100.0, 100.0],
-                context.transform,
-                graphics,
-            );
             game.draw(context, graphics);
         });
     }
