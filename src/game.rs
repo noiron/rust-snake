@@ -1,9 +1,10 @@
-use piston_window::{types::Color, Context, G2d, Key};
+use piston_window::{Context, G2d, Key};
 use rand::Rng;
 
-use crate::{drawing::draw_block, snake::Snake};
-
-const FOOD_COLOR: Color = [1.0, 0.0, 0.0, 1.0];
+use crate::{
+    drawing::{draw_circle, FOOD_COLOR},
+    snake::Snake,
+};
 
 #[derive(Clone, Copy, PartialEq)]
 pub enum Direction {
@@ -46,7 +47,7 @@ impl Game {
     }
 
     fn draw_food(&mut self, context: Context, graphics: &mut G2d) {
-        draw_block(
+        draw_circle(
             self.food_x,
             self.food_y,
             FOOD_COLOR,

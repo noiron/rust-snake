@@ -1,10 +1,11 @@
 use std::collections::LinkedList;
 
-use piston_window::{types::Color, Context, G2d};
+use piston_window::{Context, G2d};
 
-use crate::{drawing::draw_block, game::Direction};
-
-const SNAKE_COLOR: Color = [0.0, 1.0, 0.0, 1.0];
+use crate::{
+    drawing::{draw_block, SNAKE_COLOR},
+    game::Direction,
+};
 
 #[derive(Clone, Copy)]
 pub struct Block {

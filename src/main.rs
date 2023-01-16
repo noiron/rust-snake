@@ -4,6 +4,7 @@ mod drawing;
 mod game;
 mod snake;
 
+use drawing::BACKGROUND_COLOR;
 use game::Game;
 use piston_window::*;
 
@@ -30,7 +31,7 @@ fn main() {
         }
 
         window.draw_2d(&event, |context, graphics, _device| {
-            clear([1.0; 4], graphics);
+            clear(BACKGROUND_COLOR, graphics);
             game.draw(context, graphics);
         });
     }
