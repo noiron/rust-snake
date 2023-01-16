@@ -26,10 +26,10 @@ pub struct Game {
 }
 
 impl Game {
-    pub fn new() -> Game {
+    pub fn new(width: u32, height: u32) -> Game {
         Game {
-            width: 20,
-            height: 20,
+            width,
+            height,
             snake: Snake::new(),
             has_food: true,
             food_x: 8,
