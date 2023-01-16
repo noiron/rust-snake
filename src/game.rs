@@ -42,6 +42,7 @@ impl Game {
     }
 
     pub fn draw(&mut self, context: Context, graphics: &mut G2d) {
+        // draw_border(context.transform, graphics, self.width, self.height);
         self.draw_food(context, graphics);
         self.snake.draw(context, graphics);
     }
