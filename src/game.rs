@@ -6,6 +6,8 @@ use crate::{
     snake::Snake,
 };
 
+const INTERVAL: f64 = 0.2;
+
 #[derive(Clone, Copy, PartialEq)]
 pub enum Direction {
     Up,
@@ -68,7 +70,7 @@ impl Game {
             self.add_food();
         }
 
-        if self.waiting_time > 0.5 {
+        if self.waiting_time > INTERVAL {
             // 先检查再实际更新
             if self
                 .snake
@@ -106,6 +108,14 @@ impl Game {
         self.has_food = true;
     }
 
+    fn restart(&mut self) {
+        self.snake = Snake::new();
+        self.add_food();
+        self.waiting_time = 0.0; 
+        self.direction = Direction::Right;
+        self.game_over = false;
+    }
+
     pub fn key_pressed(&mut self, key: Key) {
         // TODO: 和当前方向相反的按键无效
 
@@ -114,6 +124,9 @@ impl Game {
             Key::Down => self.direction = Direction::Down,
             Key::Left => self.direction = Direction::Left,
             Key::Right => self.direction = Direction::Right,
+            Key::R => {
+                self.restart();
+            },
             _ => (),
         }
     }
