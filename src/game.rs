@@ -5,7 +5,7 @@ use crate::{drawing::draw_block, snake::Snake};
 
 const FOOD_COLOR: Color = [1.0, 0.0, 0.0, 1.0];
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq)]
 pub enum Direction {
     Up,
     Down,
@@ -22,6 +22,7 @@ pub struct Game {
     food_y: u32,
     waiting_time: f64,
     direction: Direction,
+    game_over: bool,
 }
 
 impl Game {
@@ -35,6 +36,7 @@ impl Game {
             food_y: 8,
             waiting_time: 0.0,
             direction: Direction::Right,
+            game_over: false,
         }
     }
 
@@ -43,7 +45,7 @@ impl Game {
         self.snake.draw(context, graphics);
     }
 
-    pub fn draw_food(&mut self, context: Context, graphics: &mut G2d) {
+    fn draw_food(&mut self, context: Context, graphics: &mut G2d) {
         draw_block(
             self.food_x,
             self.food_y,
@@ -56,18 +58,30 @@ impl Game {
     pub fn update(&mut self, delta_time: f64) {
         self.waiting_time += delta_time;
 
+        if self.game_over {
+            return;
+        }
+
         if !self.has_food {
             self.add_food();
         }
 
-        if self.waiting_time > 0.2 {
-            self.snake.update(self.direction);
-            self.eat_food();
-            self.waiting_time = 0.0;
+        if self.waiting_time > 0.5 {
+            // 先检查再实际更新
+            if self
+                .snake
+                .check_alive(self.direction, self.width, self.height)
+            {
+                self.snake.update(self.direction);
+                self.eat_food();
+                self.waiting_time = 0.0;
+            } else {
+                self.game_over = true;
+            }
         }
     }
 
-    pub fn eat_food(&mut self) {
+    fn eat_food(&mut self) {
         let (head_x, head_y) = self.snake.head();
         if head_x == self.food_x && head_y == self.food_y {
             self.snake.eat();
@@ -75,10 +89,12 @@ impl Game {
         }
     }
 
-    pub fn add_food(&mut self) {
+    fn add_food(&mut self) {
         let mut rng = rand::thread_rng();
         let mut x: u32 = rng.gen_range(0..self.width);
         let mut y: u32 = rng.gen_range(0..self.height);
+        // 只会在没有 food 的时候才会添加 food，不会出现 snake 在吃了 food 之后占用 tail
+        // 位置的情况。tail 这个位置在下一刻是一定会空出来的，可以用于添加新的 food。
         if self.snake.is_overlap_except_tail(x, y) {
             x = rng.gen_range(0..self.width);
             y = rng.gen_range(0..self.height);

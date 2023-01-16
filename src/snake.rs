@@ -7,7 +7,7 @@ use crate::{drawing::draw_block, game::Direction};
 const SNAKE_COLOR: Color = [0.0, 1.0, 0.0, 1.0];
 
 #[derive(Clone, Copy)]
-struct Block {
+pub struct Block {
     x: u32,
     y: u32,
 }
@@ -42,16 +42,8 @@ impl Snake {
         }
     }
 
-    pub fn update(&mut self, dir: Direction) {
-        let (head_x, head_y) = self.head();
-
-        let new_block: Block = match dir {
-            Direction::Up => Block::new(head_x, head_y - 1),
-            Direction::Down => Block::new(head_x, head_y + 1),
-            Direction::Left => Block::new(head_x - 1, head_y),
-            Direction::Right => Block::new(head_x + 1, head_y),
-        };
-
+    pub fn update(&mut self, direction: Direction) {
+        let new_block: Block = self.next_head_position(direction);
         self.body.push_front(new_block);
         self.last_removed_block = self.body.pop_back();
     }
@@ -65,6 +57,32 @@ impl Snake {
         match self.last_removed_block {
             Some(block) => self.body.push_back(block.clone()),
             None => {}
+        }
+    }
+
+    pub fn check_alive(&mut self, direction: Direction, width: u32, height: u32) -> bool {
+        let (head_x, head_y) = self.head();
+        // 下一个位置会出现负数，如果调用 next_head_position 会使得程序 panic
+        // 提前判断下这种情况，可以考虑加一个 border 来解决
+        if (head_x == 0 && direction == Direction::Left)
+            || (head_y == 0 && direction == Direction::Up)
+        {
+            return false;
+        }
+
+        let Block { x, y } = self.next_head_position(direction);
+        // println!("{}, {}", x, y);
+        !self.is_overlap_except_tail(x, y) && x < width && y < height
+    }
+
+    pub fn next_head_position(&mut self, direction: Direction) -> Block {
+        let (head_x, head_y) = self.head();
+
+        match direction {
+            Direction::Up => Block::new(head_x, head_y - 1),
+            Direction::Down => Block::new(head_x, head_y + 1),
+            Direction::Left => Block::new(head_x - 1, head_y),
+            Direction::Right => Block::new(head_x + 1, head_y),
         }
     }
 
