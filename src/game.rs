@@ -77,9 +77,12 @@ impl Game {
 
     pub fn add_food(&mut self) {
         let mut rng = rand::thread_rng();
-        let x: u32 = rng.gen_range(0..self.width);
-        let y: u32 = rng.gen_range(0..self.height);
-        // TODO: 需要保证新位置不会和 body 重叠
+        let mut x: u32 = rng.gen_range(0..self.width);
+        let mut y: u32 = rng.gen_range(0..self.height);
+        if self.snake.is_overlap_except_tail(x, y) {
+            x = rng.gen_range(0..self.width);
+            y = rng.gen_range(0..self.height);
+        }
         self.food_x = x;
         self.food_y = y;
         self.has_food = true;

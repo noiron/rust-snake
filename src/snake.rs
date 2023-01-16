@@ -67,4 +67,19 @@ impl Snake {
             None => {}
         }
     }
+
+    pub fn is_overlap_except_tail(&mut self, x: u32, y: u32) -> bool {
+        let mut count = 0;
+
+        for block in self.body.iter() {
+            if count > self.body.len() - 1 {
+                break;
+            }
+            if block.x == x && block.y == y {
+                return true;
+            }
+            count += 1;
+        }
+        return false;
+    }
 }
